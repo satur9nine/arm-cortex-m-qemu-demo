@@ -1,0 +1,10 @@
+Contained within libc_alt are additions and replacements to the chosen libc 
+implementation for this project: newlib-nano.
+
+Newlib-nano is included in the arm-none-eabi-gcc toolchain but is lacking:
+ * Sub-optimal performance memory routines: memcpy, memcmp, memset, strcpy, etc
+ * Missing some valuable POSIX routines: timegm, htonl, ntohl, etc
+
+Note we keep the directory structure of the originating project but just copy 
+the files we desire. Keeping the directory structure allows diffing newer 
+releases to see what fixes/improvements have been made.

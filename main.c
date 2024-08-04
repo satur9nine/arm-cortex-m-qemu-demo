@@ -87,26 +87,22 @@
 #include "uart.h"
 
 /* Demo app includes. */
-#include "death.h"
-#include "blocktim.h"
-#include "semtest.h"
 #include "bitmap.h"
-#include "QPeek.h"
-#include "recmutex.h"
-#include "QueueSet.h"
-#include "EventGroupsDemo.h"
-#include "MessageBufferDemo.h"
-#include "StreamBufferDemo.h"
+
+#include "fault_print.h"
+#include "cm_backtrace.h"
 
 /*-----------------------------------------------------------*/
 
+/* Test CmBacktrace with a crash */
+//#define CRASH
+
 /* The time between cycles of the 'check' functionality (defined within the
  * tick hook. */
-#define mainCHECK_DELAY                        ( ( TickType_t ) 5000 / portTICK_PERIOD_MS )
+#define mainCHECK_DELAY                        ( ( TickType_t ) 2000 / portTICK_PERIOD_MS )
 
 /* Task stack sizes. */
 #define mainOLED_TASK_STACK_SIZE               ( configMINIMAL_STACK_SIZE + 40 )
-#define mainMESSAGE_BUFFER_TASKS_STACK_SIZE    ( 100 )
 
 /* Task priorities. */
 #define mainCHECK_TASK_PRIORITY                ( tskIDLE_PRIORITY + 3 )
@@ -161,11 +157,6 @@ void vApplicationStackOverflowHook( TaskHandle_t pxTask,
                                     char * pcTaskName );
 void vApplicationTickHook( void );
 
-/*
- * Basic polling UART write function.
- */
-static void prvPrintString( const char * pcString );
-
 /*-----------------------------------------------------------*/
 
 /* The queue used to send messages to the OLED task. */
@@ -174,6 +165,20 @@ static QueueHandle_t xOLEDQueue;
 /* The welcome text. */
 const char * const pcWelcomeMessage = "   www.FreeRTOS.org";
 
+static TaskHandle_t prvOLEDTaskHandle;
+
+/*-----------------------------------------------------------*/
+
+static void vInspectionTask( void * pvParameters )
+{
+    (void) pvParameters;
+
+    while (1) {
+        vTaskDelay(3000);
+
+        cm_backtrace_print_call_stack_for_thread(prvOLEDTaskHandle);
+    }
+}
 /*-----------------------------------------------------------*/
 
 /*************************************************************************
@@ -189,27 +194,19 @@ int main( void )
      * vTraceEnable( TRC_START ); */
     prvSetupHardware();
 
+    printf("Init complete\r\n");
+
+    cm_backtrace_init("arm-cortex-qemu-demo", "1", "1");
+
     /* Create the queue used by the OLED task.  Messages for display on the OLED
      * are received via this queue. */
     xOLEDQueue = xQueueCreate( mainOLED_QUEUE_SIZE, sizeof( char * ) );
 
-    /* Start the standard demo tasks. */
-    vStartRecursiveMutexTasks();
-    vCreateBlockTimeTasks();
-    vStartSemaphoreTasks( mainSEM_TEST_PRIORITY );
-    vStartQueuePeekTasks();
-    vStartQueueSetTasks();
-    vStartEventGroupTasks();
-    vStartMessageBufferTasks( mainMESSAGE_BUFFER_TASKS_STACK_SIZE );
-    vStartStreamBufferTasks();
-
     /* Start the tasks defined within this file/specific to this demo. */
-    xTaskCreate( prvOLEDTask, "OLED", mainOLED_TASK_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL );
+    xTaskCreate( prvOLEDTask, "OLED", mainOLED_TASK_STACK_SIZE, NULL, 2, &prvOLEDTaskHandle );
 
-    /* The suicide tasks must be created last as they need to know how many
-     * tasks were running prior to their creation in order to ascertain whether
-     * or not the correct/expected number of tasks are running at any given time. */
-    vCreateSuicidalTasks( mainCREATOR_TASK_PRIORITY );
+    /* Task to test CmBacktrace ability to dump stack from other tasks */
+    xTaskCreate( vInspectionTask, "Inspect", 180, NULL, 1, NULL );
 
     /* Uncomment the following line to configure the high frequency interrupt
      * used to measure the interrupt jitter time.
@@ -247,8 +244,8 @@ void prvSetupHardware( void )
 
 void vApplicationTickHook( void )
 {
-    static const char * pcMessage = "PASS";
     static uint32_t ulTicksSinceLastDisplay = 0;
+    const char * pcMessage = "PASS";
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
     /* Called from every tick interrupt.  Have enough ticks passed to make it
@@ -259,74 +256,65 @@ void vApplicationTickHook( void )
     {
         ulTicksSinceLastDisplay = 0;
 
-        /* Has an error been found in any task? */
-        if( xAreStreamBufferTasksStillRunning() != pdTRUE )
-        {
-            pcMessage = "ERROR IN STRM";
-        }
-        else if( xAreMessageBufferTasksStillRunning() != pdTRUE )
-        {
-            pcMessage = "ERROR IN MSG";
-        }
-        else if( xIsCreateTaskStillRunning() != pdTRUE )
-        {
-            pcMessage = "ERROR IN CREATE";
-        }
-        else if( xAreBlockTimeTestTasksStillRunning() != pdTRUE )
-        {
-            pcMessage = "ERROR IN BLOCK TIME";
-        }
-        else if( xAreSemaphoreTasksStillRunning() != pdTRUE )
-        {
-            pcMessage = "ERROR IN SEMAPHORE";
-        }
-        else if( xAreQueuePeekTasksStillRunning() != pdTRUE )
-        {
-            pcMessage = "ERROR IN PEEK Q";
-        }
-        else if( xAreRecursiveMutexTasksStillRunning() != pdTRUE )
-        {
-            pcMessage = "ERROR IN REC MUTEX";
-        }
-        else if( xAreQueueSetTasksStillRunning() != pdPASS )
-        {
-            pcMessage = "ERROR IN Q SET";
-        }
-        else if( xAreEventGroupTasksStillRunning() != pdTRUE )
-        {
-            pcMessage = "ERROR IN EVNT GRP";
-        }
-
         /* Send the message to the OLED gatekeeper for display. */
         xHigherPriorityTaskWoken = pdFALSE;
         xQueueSendFromISR( xOLEDQueue, &pcMessage, &xHigherPriorityTaskWoken );
     }
-
-    /* Write to a queue that is in use as part of the queue set demo to
-     * demonstrate using queue sets from an ISR. */
-    vQueueSetAccessQueueSetFromISR();
-
-    /* Call the event group ISR tests. */
-    vPeriodicEventGroupsProcessing();
-
-    /* Exercise stream buffers from interrupts. */
-    vPeriodicStreamBufferProcessing();
 }
 /*-----------------------------------------------------------*/
 
-int putchar(int c)
-{
-	UARTCharPut( UART0_BASE, c );
-	return c;
+void cm_backtrace_late_fault_handler(uint32_t stacked_pc, uint32_t stacked_psr, uint32_t stacked_lr, uint32_t cfsr,
+		uint32_t *backtrace_addrs, uint32_t backtrace_buf_size) {
+    (void) stacked_pc;
+    (void) stacked_psr;
+    (void) stacked_lr;
+    (void) cfsr;
+    (void) backtrace_addrs;
+    (void) backtrace_buf_size;
+
+
 }
 
-static void prvPrintString( const char * pcString )
+int _write(int handle, char *data, int size)
 {
-    while( *pcString != 0x00 )
+    int count;
+
+    (void) handle;
+
+    for(count = 0; count < size; count++)
     {
-        UARTCharPut( UART0_BASE, *pcString );
-        pcString++;
+        UARTCharPut( UART0_BASE, data[count]);
     }
+
+    return count;
+}
+/*-----------------------------------------------------------*/
+
+// Write to uart directly without heap
+int fault_printf(const char *__restrict format, ...)
+{
+    static char pbuf[180];
+    va_list args;
+    va_start(args, format);
+    int len = vsnprintf(pbuf, sizeof(pbuf), format, args);
+    (void) _write((int) stderr, pbuf, len);
+    va_end (args);
+    return len;
+}
+/*-----------------------------------------------------------*/
+
+void maybeCrash(void)
+{
+    static int bomb = 1;
+    (void) bomb;
+
+#ifdef CRASH
+    if ((--bomb) == 0) {
+        // Jump to reserved memory... nothing to execute
+        void(* explode)(void) = (void (*)(void)) 0x10000000;
+        explode();
+    }
+#endif
 }
 /*-----------------------------------------------------------*/
 
@@ -389,8 +377,9 @@ void prvOLEDTask( void * pvParameters )
          * high priority time test. */
         sprintf( cMessage, "%s %u", pcMessage, ( unsigned int ) xTaskGetTickCount() );
         vOLEDStringDraw( cMessage, 0, ulY, mainFULL_SCALE );
-        prvPrintString( cMessage );
-        prvPrintString( "\r\n" );
+        printf("%s\r\n", cMessage);
+
+        maybeCrash();
     }
 }
 /*-----------------------------------------------------------*/

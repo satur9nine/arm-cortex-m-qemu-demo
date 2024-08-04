@@ -195,6 +195,8 @@ __WEAK void cm_backtrace_late_fault_handler(uint32_t stacked_pc, uint32_t stacke
     (void) cfsr;
     (void) backtrace_addrs;
     (void) backtrace_buf_size;
+
+    // Real implementation might reboot here
 }
 
 #ifdef CMB_USING_OS_PLATFORM
@@ -463,7 +465,7 @@ void cm_backtrace_assert(uint32_t sp) {
 
     CMB_ASSERT(init_ok);
 
-    cmb_println("");
+    cmb_println(" ");
     cm_backtrace_firmware_info();
 
 #ifdef CMB_USING_OS_PLATFORM
@@ -680,7 +682,7 @@ void cm_backtrace_fault(uint32_t fault_handler_lr, uint32_t fault_handler_sp) {
 
     on_fault = true;
 
-    cmb_println("");
+    cmb_println(" ");
     cm_backtrace_firmware_info();
 
 #ifdef CMB_USING_OS_PLATFORM

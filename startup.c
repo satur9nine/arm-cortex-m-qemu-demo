@@ -31,6 +31,7 @@
 //
 //*****************************************************************************
 void ResetISR(void);
+void HardFault_Handler(void);
 static void NmiSR(void);
 static void FaultISR(void);
 static void IntDefaultHandler(void);
@@ -51,13 +52,10 @@ void vAssertCalled( const char *pcFile, unsigned long ulLine );
 
 //*****************************************************************************
 //
-// Reserve space for the system stack.
+// Location of the system stack.
 //
 //*****************************************************************************
-#ifndef STACK_SIZE
-#define STACK_SIZE                              120
-#endif
-static unsigned long pulStack[STACK_SIZE];
+extern unsigned long _estack;
 
 //*****************************************************************************
 //
@@ -69,19 +67,19 @@ static unsigned long pulStack[STACK_SIZE];
 __attribute__ ((section(".isr_vector")))
 void (* const g_pfnVectors[])(void) =
 {
-    (void (*)(void))((unsigned long)pulStack + sizeof(pulStack)),
+    (void (*)(void))((unsigned long)(&_estack)),
                                             // The initial stack pointer
     ResetISR,                               // The reset handler
     NmiSR,                                  // The NMI handler
-    FaultISR,                               // The hard fault handler
-    IntDefaultHandler,                      // The MPU fault handler
-    IntDefaultHandler,                      // The bus fault handler
-    IntDefaultHandler,                      // The usage fault handler
+    HardFault_Handler,                      // The hard fault handler
+    HardFault_Handler,                      // The MPU fault handler
+    HardFault_Handler,                      // The bus fault handler
+    HardFault_Handler,                      // The usage fault handler
     0,                                      // Reserved
     0,                                      // Reserved
     0,                                      // Reserved
     0,                                      // Reserved
-    vPortSVCHandler,						// SVCall handler
+    vPortSVCHandler,                        // SVCall handler
     IntDefaultHandler,                      // Debug monitor handler
     0,                                      // Reserved
     xPortPendSVHandler,                     // The PendSV handler
@@ -105,11 +103,11 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // ADC Sequence 2
     IntDefaultHandler,                      // ADC Sequence 3
     IntDefaultHandler,                      // Watchdog timer
-	Timer0IntHandler,                      // Timer 0 subtimer A
+    Timer0IntHandler,                      // Timer 0 subtimer A
     IntDefaultHandler,                      // Timer 0 subtimer B
     IntDefaultHandler,                      // Timer 1 subtimer A
     IntDefaultHandler,                      // Timer 1 subtimer B
-	vT2InterruptHandler,                      // Timer 2 subtimer A
+    vT2InterruptHandler,                      // Timer 2 subtimer A
     IntDefaultHandler,                      // Timer 2 subtimer B
     IntDefaultHandler,                      // Analog Comparator 0
     IntDefaultHandler,                      // Analog Comparator 1
@@ -121,7 +119,7 @@ void (* const g_pfnVectors[])(void) =
     IntDefaultHandler,                      // GPIO Port H
     IntDefaultHandler,                      // UART2 Rx and Tx
     IntDefaultHandler,                      // SSI1 Rx and Tx
-	vT3InterruptHandler,                    // Timer 3 subtimer A
+    vT3InterruptHandler,                    // Timer 3 subtimer A
     IntDefaultHandler,                      // Timer 3 subtimer B
     IntDefaultHandler,                      // I2C1 Master and Slave
     IntDefaultHandler,                      // Quadrature Encoder 1
@@ -209,17 +207,17 @@ NmiSR(void)
 // for examination by a debugger.
 //
 //*****************************************************************************
-static void
-FaultISR(void)
-{
-    //
-    // Enter an infinite loop.
-    //
-    while(1)
-    {
-    	vAssertCalled( __FILE__, __LINE__ );
-    }
-}
+//static void
+//FaultISR(void)
+//{
+//    //
+//    // Enter an infinite loop.
+//    //
+//    while(1)
+//    {
+//    	vAssertCalled( __FILE__, __LINE__ );
+//    }
+//}
 
 //*****************************************************************************
 //

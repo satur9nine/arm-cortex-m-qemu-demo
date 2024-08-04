@@ -66,7 +66,7 @@
 #include <stddef.h>
 
 #include "newlib.h"
-#if ((__NEWLIB__ == 2) && (__NEWLIB_MINOR__ < 5)) || ((__NEWLIB__ == 4) && (__NEWLIB_MINOR__ > 2) || (__NEWLIB__ < 2) || (__NEWLIB__ > 4))
+#if ((__NEWLIB__ == 2) && (__NEWLIB_MINOR__ < 5)) || ((__NEWLIB__ == 4) && (__NEWLIB_MINOR__ > 4) || (__NEWLIB__ < 2) || (__NEWLIB__ > 4))
   #warning "This wrapper was verified for newlib versions 2.5 - 4.2; please ensure newlib's external requirements for malloc-family are unchanged!"
 #endif
 
@@ -225,6 +225,7 @@ void *pvPortMalloc( size_t xSize ) PRIVILEGED_FUNCTION {
     void *p = malloc(xSize);
     return p;
 }
+
 void vPortFree( void *pv ) PRIVILEGED_FUNCTION {
     free(pv);
 }

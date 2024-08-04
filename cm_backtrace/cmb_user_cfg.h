@@ -1,7 +1,9 @@
 #ifndef _CMB_USER_CFG_H_
 #define _CMB_USER_CFG_H_
 
-#define cmb_println(...) do { printf(__VA_ARGS__); printf("\r\n"); } while (1)
+#include "fault_print.h"
+
+#define cmb_println(...) do { fault_printf(__VA_ARGS__); fault_printf("\r\n"); } while (0)
 
 /* enable OS platform */
 #define CMB_USING_OS_PLATFORM
