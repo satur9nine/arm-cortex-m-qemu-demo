@@ -433,8 +433,6 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
     #if ( configUSE_POSIX_ERRNO == 1 )
         int iTaskErrno;
     #endif
-
-    uint32_t uxSizeOfStack;
 } tskTCB;
 
 /* The old tskTCB name is maintained above then typedefed to the new TCB_t name
@@ -1298,7 +1296,6 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB ) PRIVILEGED_FUNCTION;
             #endif /* tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE */
 
             prvInitialiseNewTask( pxTaskCode, pcName, uxStackDepth, pvParameters, uxPriority, pxCreatedTask, pxNewTCB, NULL );
-            pxNewTCB->uxSizeOfStack = uxStackDepth;
         }
         else
         {
@@ -1653,7 +1650,6 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB ) PRIVILEGED_FUNCTION;
                 /* More details at: https://github.com/FreeRTOS/FreeRTOS-Kernel/blob/main/MISRA.md#rule-115 */
                 /* coverity[misra_c_2012_rule_11_5_violation] */
                 pxNewTCB->pxStack = ( StackType_t * ) pvPortMallocStack( ( ( ( size_t ) uxStackDepth ) * sizeof( StackType_t ) ) );
-                pxNewTCB->uxSizeOfStack = uxStackDepth;
 
                 if( pxNewTCB->pxStack == NULL )
                 {
@@ -1687,7 +1683,6 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB ) PRIVILEGED_FUNCTION;
 
                     /* Store the stack location in the TCB. */
                     pxNewTCB->pxStack = pxStack;
-                    pxNewTCB->uxSizeOfStack = uxStackDepth;
                 }
                 else
                 {
@@ -8700,4 +8695,4 @@ void vTaskResetState( void )
 }
 /*-----------------------------------------------------------*/
 
-#include "freertos_addons.h"
+#include "tasks_addons.h"

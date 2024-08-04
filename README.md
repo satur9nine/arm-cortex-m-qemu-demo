@@ -12,3 +12,5 @@ TODO
  * Add CMSIS
 
 The target device is the Stellaris LM3S6965 run from QEMU so no physical hardware is needed.
+
+Tested with the arm-none-eabi-gcc version 13.3.rel1 provided by ARM.

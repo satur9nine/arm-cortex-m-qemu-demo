@@ -357,7 +357,7 @@ if (!(EXPR))                                                                   \
         extern uint32_t vTaskStackSize(void);
         extern char * vTaskName(void);
         extern uint32_t* pvTaskStackStartAddrForTask(TaskHandle_t xTask); // pxStack
-        extern uint32_t xTaskStackSizeForTask(TaskHandle_t xTask); // uxSizeOfStack
+        extern uint32_t xTaskStackSizeForTask(TaskHandle_t xTask); // pxEndOfStack - pxStack
         extern uint32_t *xTaskStackAddrForTask(TaskHandle_t xTask); // pxTopOfStack
     #elif (CMB_OS_PLATFORM_TYPE == CMB_OS_PLATFORM_RTX5)
         #include "rtx_os.h"

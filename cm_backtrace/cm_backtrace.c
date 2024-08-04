@@ -515,7 +515,8 @@ void cm_backtrace_print_call_stack_for_thread(void *threadHandle)
 #elif (CMB_OS_PLATFORM_TYPE == CMB_OS_PLATFORM_UCOSIII)
     TODO
 #elif (CMB_OS_PLATFORM_TYPE == CMB_OS_PLATFORM_FREERTOS)
-	TaskHandle_t taskHandle = (TaskHandle_t) threadHandle;
+    TaskHandle_t taskHandle = (TaskHandle_t) threadHandle;
+    vTaskSuspend(taskHandle);
     stack_size = xTaskStackSizeForTask(taskHandle) * sizeof( StackType_t );
     stack_pointer = (uint32_t) xTaskStackAddrForTask(taskHandle);
     stack_start_addr = (uint32_t) pvTaskStackStartAddrForTask(taskHandle);
@@ -529,6 +530,16 @@ void cm_backtrace_print_call_stack_for_thread(void *threadHandle)
             stack_pointer, stack_start_addr, stack_size);
 
     print_call_stack(call_stack_buf, cur_depth);
+
+#if (CMB_OS_PLATFORM_TYPE == CMB_OS_PLATFORM_RTT)
+    TODO
+#elif (CMB_OS_PLATFORM_TYPE == CMB_OS_PLATFORM_UCOSII)
+    TODO
+#elif (CMB_OS_PLATFORM_TYPE == CMB_OS_PLATFORM_UCOSIII)
+    TODO
+#elif (CMB_OS_PLATFORM_TYPE == CMB_OS_PLATFORM_FREERTOS)
+    vTaskResume((TaskHandle_t) threadHandle);
+#endif
 }
 
 #if (CMB_CPU_PLATFORM_TYPE != CMB_CPU_ARM_CORTEX_M0)

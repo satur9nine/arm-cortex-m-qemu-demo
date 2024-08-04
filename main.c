@@ -89,13 +89,17 @@
 /* Demo app includes. */
 #include "bitmap.h"
 
-#include "fault_print.h"
+/* Other stuff */
 #include "cm_backtrace.h"
+#include "backtrace.h"
 
 /*-----------------------------------------------------------*/
 
-/* Test CmBacktrace with a crash */
+// Test backtrace with a crash
 //#define CRASH
+
+// Test backtrace with an infinite loop
+#define DEMO_INFINTE_LOOP
 
 /* The time between cycles of the 'check' functionality (defined within the
  * tick hook. */
@@ -181,6 +185,22 @@ static void vInspectionTask( void * pvParameters )
 }
 /*-----------------------------------------------------------*/
 
+#define RRC_BACKTRACE_LIMIT 24
+
+static void rrc_backtrace_example(void)
+{
+	backtrace_t trace[RRC_BACKTRACE_LIMIT];
+
+	int count = backtrace_unwind(trace, RRC_BACKTRACE_LIMIT);
+
+	printf("backtrace: ");
+	for (int i = 0; i < count; i++) {
+		printf("%08x ", (unsigned int) trace[i].address);
+	}
+	printf("\n");
+}
+/*-----------------------------------------------------------*/
+
 /*************************************************************************
 * Please ensure to read http://www.freertos.org/portlm3sx965.html
 * which provides information on configuring and running this demo for the
@@ -194,7 +214,7 @@ int main( void )
      * vTraceEnable( TRC_START ); */
     prvSetupHardware();
 
-    printf("Init complete\r\n");
+    printf("Init complete\n");
 
     cm_backtrace_init("arm-cortex-qemu-demo", "1", "1");
 
@@ -206,11 +226,13 @@ int main( void )
     xTaskCreate( prvOLEDTask, "OLED", mainOLED_TASK_STACK_SIZE, NULL, 2, &prvOLEDTaskHandle );
 
     /* Task to test CmBacktrace ability to dump stack from other tasks */
-    xTaskCreate( vInspectionTask, "Inspect", 180, NULL, 1, NULL );
+    xTaskCreate( vInspectionTask, "Inspect", 180, NULL, 3, NULL );
 
     /* Uncomment the following line to configure the high frequency interrupt
      * used to measure the interrupt jitter time.
      * vSetupHighFrequencyTimer(); */
+
+    rrc_backtrace_example();
 
     /* Start the scheduler. */
     vTaskStartScheduler();
@@ -261,59 +283,23 @@ void vApplicationTickHook( void )
         xQueueSendFromISR( xOLEDQueue, &pcMessage, &xHigherPriorityTaskWoken );
     }
 }
+
 /*-----------------------------------------------------------*/
 
-void cm_backtrace_late_fault_handler(uint32_t stacked_pc, uint32_t stacked_psr, uint32_t stacked_lr, uint32_t cfsr,
-		uint32_t *backtrace_addrs, uint32_t backtrace_buf_size) {
-    (void) stacked_pc;
-    (void) stacked_psr;
-    (void) stacked_lr;
-    (void) cfsr;
-    (void) backtrace_addrs;
-    (void) backtrace_buf_size;
-
-
+void spin(void)
+{
+    while (1);
 }
 
-int _write(int handle, char *data, int size)
+void demoBacktrace(void)
 {
-    int count;
-
-    (void) handle;
-
-    for(count = 0; count < size; count++)
-    {
-        UARTCharPut( UART0_BASE, data[count]);
-    }
-
-    return count;
-}
-/*-----------------------------------------------------------*/
-
-// Write to uart directly without heap
-int fault_printf(const char *__restrict format, ...)
-{
-    static char pbuf[180];
-    va_list args;
-    va_start(args, format);
-    int len = vsnprintf(pbuf, sizeof(pbuf), format, args);
-    (void) _write((int) stderr, pbuf, len);
-    va_end (args);
-    return len;
-}
-/*-----------------------------------------------------------*/
-
-void maybeCrash(void)
-{
-    static int bomb = 1;
-    (void) bomb;
-
-#ifdef CRASH
-    if ((--bomb) == 0) {
-        // Jump to reserved memory... nothing to execute
-        void(* explode)(void) = (void (*)(void)) 0x10000000;
-        explode();
-    }
+#ifdef DEMO_CRASH
+    // Jump to reserved memory... nothing to execute so crashes
+    void(* explode)(void) = (void (*)(void)) 0x10000000;
+    explode();
+#elif defined(DEMO_INFINTE_LOOP)
+    // Spin in an infinite loop to test backtrace discovers that
+    spin();
 #endif
 }
 /*-----------------------------------------------------------*/
@@ -379,7 +365,7 @@ void prvOLEDTask( void * pvParameters )
         vOLEDStringDraw( cMessage, 0, ulY, mainFULL_SCALE );
         printf("%s\r\n", cMessage);
 
-        maybeCrash();
+        demoBacktrace();
     }
 }
 /*-----------------------------------------------------------*/

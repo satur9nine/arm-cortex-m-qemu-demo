@@ -1,7 +1,7 @@
 #ifndef _CMB_USER_CFG_H_
 #define _CMB_USER_CFG_H_
 
-#include "fault_print.h"
+#include "accoutrements.h"
 
 #define cmb_println(...) do { fault_printf(__VA_ARGS__); fault_printf("\r\n"); } while (0)
 

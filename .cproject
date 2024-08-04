@@ -62,8 +62,11 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/FreeRTOS/CommonDemoFiles/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/LuminaryMicroDrivers}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/libc_alt/musl/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/CMSIS/Core/Include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/CMSIS/Device/TI/LM3S/Include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/rrc-backtrace/include}&quot;"/>
 								</option>
-								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.other.653088617" name="Other compiler flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.other" useByScannerDiscovery="true" value="" valueType="string"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.other.653088617" name="Other compiler flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.other" useByScannerDiscovery="true" value="-funwind-tables -fno-omit-frame-pointer" valueType="string"/>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.std.656993385" name="Language standard" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.std" useByScannerDiscovery="true" value="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.std.gnu11" valueType="enumerated"/>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.otheroptimizations.983474864" name="Other optimization flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.otheroptimizations" useByScannerDiscovery="true" value="" valueType="string"/>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.otherwarnings.114399707" name="Other warning flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.otherwarnings" useByScannerDiscovery="true" value="" valueType="string"/>
@@ -75,7 +78,7 @@
 							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.1189578391" name="GNU ARM Cross C++ Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler"/>
 							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.linker.1774612030" name="GNU ARM Cross C Linker" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.linker">
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.gcsections.187265903" name="Remove unused sections (-Xlinker --gc-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.gcsections" useByScannerDiscovery="false" value="true" valueType="boolean"/>
-								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.usenewlibnosys.855714527" name="Do not use syscalls (--specs=nosys.specs)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.usenewlibnosys" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.usenewlibnosys.855714527" name="Do not use syscalls (--specs=nosys.specs)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.usenewlibnosys" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.usenewlibnano.741608735" name="Use newlib-nano (--specs=nano.specs)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.usenewlibnano" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.other.1354177861" name="Other linker flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.other" useByScannerDiscovery="false" value="" valueType="string"/>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.nostart.1159637972" name="Do not use standard start files (-nostartfiles)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.nostart" useByScannerDiscovery="false" value="true" valueType="boolean"/>
@@ -121,7 +124,7 @@
 						</tool>
 					</fileInfo>
 					<sourceEntries>
-						<entry excluding="FreeRTOS/Source/portable/Common|FreeRTOS/CommonDemoFiles/StreamBufferDemo.c|FreeRTOS/CommonDemoFiles/semtest.c|FreeRTOS/CommonDemoFiles/recmutex.c|FreeRTOS/CommonDemoFiles/QueueSet.c|FreeRTOS/CommonDemoFiles/QPeek.c|FreeRTOS/CommonDemoFiles/MessageBufferDemo.c|FreeRTOS/CommonDemoFiles/EventGroupsDemo.c|FreeRTOS/CommonDemoFiles/death.c|FreeRTOS/CommonDemoFiles/blocktim.c|LocalDemoFiles/printf-stdarg.c|FreeRTOS/Source/portable/MemMang|FreeRTOS/Source/portable/ARMv8M|FreeRTOS/Source/portable/GCC/ARM_CM85_NTZ|FreeRTOS/Source/portable/GCC/ARM_CM85|FreeRTOS/Source/portable/GCC/ARM_CM7|FreeRTOS/Source/portable/GCC/ARM_CM55_NTZ|FreeRTOS/Source/portable/GCC/ARM_CM55|FreeRTOS/Source/portable/GCC/ARM_CM4F|FreeRTOS/Source/portable/GCC/ARM_CM4_MPU|FreeRTOS/Source/portable/GCC/ARM_CM35P_NTZ|FreeRTOS/Source/portable/GCC/ARM_CM35P|FreeRTOS/Source/portable/GCC/ARM_CM33_NTZ|FreeRTOS/Source/portable/GCC/ARM_CM33|FreeRTOS/Source/portable/GCC/ARM_CM3_MPU|FreeRTOS/Source/portable/GCC/ARM_CM23_NTZ|FreeRTOS/Source/portable/GCC/ARM_CM23|FreeRTOS/Source/portable/GCC/ARM_CM0|FreeRTOS_Source/portable/MemMang/heap_4.c|FreeRTOS_Source/examples|FreeRTOS+Trace Recorder" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="CMSIS/Device/TI/LM3S/Source|FreeRTOS/Source/portable/Common|FreeRTOS/CommonDemoFiles/StreamBufferDemo.c|FreeRTOS/CommonDemoFiles/semtest.c|FreeRTOS/CommonDemoFiles/recmutex.c|FreeRTOS/CommonDemoFiles/QueueSet.c|FreeRTOS/CommonDemoFiles/QPeek.c|FreeRTOS/CommonDemoFiles/MessageBufferDemo.c|FreeRTOS/CommonDemoFiles/EventGroupsDemo.c|FreeRTOS/CommonDemoFiles/death.c|FreeRTOS/CommonDemoFiles/blocktim.c|LocalDemoFiles/printf-stdarg.c|FreeRTOS/Source/portable/MemMang|FreeRTOS/Source/portable/ARMv8M|FreeRTOS/Source/portable/GCC/ARM_CM85_NTZ|FreeRTOS/Source/portable/GCC/ARM_CM85|FreeRTOS/Source/portable/GCC/ARM_CM7|FreeRTOS/Source/portable/GCC/ARM_CM55_NTZ|FreeRTOS/Source/portable/GCC/ARM_CM55|FreeRTOS/Source/portable/GCC/ARM_CM4F|FreeRTOS/Source/portable/GCC/ARM_CM4_MPU|FreeRTOS/Source/portable/GCC/ARM_CM35P_NTZ|FreeRTOS/Source/portable/GCC/ARM_CM35P|FreeRTOS/Source/portable/GCC/ARM_CM33_NTZ|FreeRTOS/Source/portable/GCC/ARM_CM33|FreeRTOS/Source/portable/GCC/ARM_CM3_MPU|FreeRTOS/Source/portable/GCC/ARM_CM23_NTZ|FreeRTOS/Source/portable/GCC/ARM_CM23|FreeRTOS/Source/portable/GCC/ARM_CM0|FreeRTOS_Source/portable/MemMang/heap_4.c|FreeRTOS_Source/examples|FreeRTOS+Trace Recorder" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -145,4 +148,5 @@
 			<resource resourceType="PROJECT" workspacePath="/arm-cortex-qemu-demo"/>
 		</configuration>
 	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>
