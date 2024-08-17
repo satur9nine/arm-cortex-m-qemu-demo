@@ -498,6 +498,13 @@ void cm_backtrace_assert(uint32_t sp) {
     print_call_stack(call_stack_buf, cur_depth);
 }
 
+#include "accoutrements.h"
+
+/**
+ * Must be called from a task that is higher priority than the target.
+ *
+ * @param threadHandle
+ */
 void cm_backtrace_print_call_stack_for_thread(void *threadHandle)
 {
     ssize_t stack_size = 0;
@@ -516,30 +523,32 @@ void cm_backtrace_print_call_stack_for_thread(void *threadHandle)
     TODO
 #elif (CMB_OS_PLATFORM_TYPE == CMB_OS_PLATFORM_FREERTOS)
     TaskHandle_t taskHandle = (TaskHandle_t) threadHandle;
-    vTaskSuspend(taskHandle);
     stack_size = xTaskStackSizeForTask(taskHandle) * sizeof( StackType_t );
-    stack_pointer = (uint32_t) xTaskStackAddrForTask(taskHandle);
+    stack_pointer = ((uint32_t) xTaskStackAddrForTask(taskHandle));
     stack_start_addr = (uint32_t) pvTaskStackStartAddrForTask(taskHandle);
 #endif
 
     CMB_ASSERT(stack_size > 0);
     CMB_ASSERT(stack_pointer >= stack_start_addr);
 
-    uint32_t call_stack_buf[CMB_CALL_STACK_MAX_DEPTH] = {0};
-    size_t cur_depth = cm_backtrace_call_stack_any(call_stack_buf, CMB_CALL_STACK_MAX_DEPTH,
-            stack_pointer, stack_start_addr, stack_size);
+    // Cortex M exception handler automatically saves the following registers to
+    // the stack in this order: (R0-R3, R12, LR, PC and PSR).
+    // RTOS then saves additional registers r4 through r11. To find the PC on
+    // the stack offset the 8 RTOS saved registers and these 6 exception saved
+    // registers: R0-R3, R12, LR.
+
+    // TODO: test with real floating point Cortex M chip
+    uint32_t *saved_regs = (uint32_t *) (stack_pointer);
+    uint32_t *saved_lr_addr = &saved_regs[8 + 5];
+    uint32_t *saved_pc_addr = &saved_regs[8 + 6];
+
+    uint32_t call_stack_buf[CMB_CALL_STACK_MAX_DEPTH] = { *saved_pc_addr, *saved_lr_addr };
+
+    // Fill in the rest of the stack
+    size_t cur_depth = 2 + cm_backtrace_call_stack_any(&call_stack_buf[2], CMB_CALL_STACK_MAX_DEPTH - 2,
+            ((uint32_t) saved_pc_addr) + sizeof( StackType_t ), stack_start_addr, stack_size);
 
     print_call_stack(call_stack_buf, cur_depth);
-
-#if (CMB_OS_PLATFORM_TYPE == CMB_OS_PLATFORM_RTT)
-    TODO
-#elif (CMB_OS_PLATFORM_TYPE == CMB_OS_PLATFORM_UCOSII)
-    TODO
-#elif (CMB_OS_PLATFORM_TYPE == CMB_OS_PLATFORM_UCOSIII)
-    TODO
-#elif (CMB_OS_PLATFORM_TYPE == CMB_OS_PLATFORM_FREERTOS)
-    vTaskResume((TaskHandle_t) threadHandle);
-#endif
 }
 
 #if (CMB_CPU_PLATFORM_TYPE != CMB_CPU_ARM_CORTEX_M0)

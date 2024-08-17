@@ -16,4 +16,6 @@
 /* language of print information */
 /* #define CMB_PRINT_LANGUAGE             CMB_PRINT_LANGUAGE_ENGLISH(default) or CMB_PRINT_LANGUAGE_CHINESE or CMB_PRINT_LANGUAGE_CHINESE_UTF8 */
 
+#define CMB_CALL_STACK_MAX_DEPTH 12
+
 #endif /* _CMB_USER_CFG_H_ */

@@ -54,3 +54,4 @@ dkms.conf
 
 # IDE files
 org.eclipse.cdt.core.prefs
+.settings/language.settings.xml

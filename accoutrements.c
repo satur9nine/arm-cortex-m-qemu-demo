@@ -34,3 +34,35 @@ void cm_backtrace_late_fault_handler(uint32_t stacked_pc, uint32_t stacked_psr, 
     NVIC_SystemReset();
     while (1);
 }
+
+void print_mem(const void *ptr, const size_t size)
+{
+    const size_t BYTES_PER_LINE = 16;
+    size_t offset, read;
+
+    uint8_t *p = (uint8_t *) ptr;
+    const uint8_t *maxp = (p + size);
+
+    if (ptr == NULL || size == 0) {
+        return;
+    }
+
+    for (offset = read = 0; offset != size; offset += read) {
+        uint8_t buf[BYTES_PER_LINE];
+
+        for (read = 0; read != BYTES_PER_LINE && (&p[offset + read]) < maxp; read++) {
+            buf[read] = p[offset + read];
+        }
+
+        if (read == 0)
+            return;
+
+        printf("%.8x: ", (unsigned int) (offset + (unsigned int) ptr));
+
+        for (size_t i = 0; i < read; i++) {
+            printf("%.2x", buf[i]);
+        }
+
+        printf("\n");
+    }
+}

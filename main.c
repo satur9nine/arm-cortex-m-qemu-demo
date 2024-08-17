@@ -136,30 +136,10 @@
 /*-----------------------------------------------------------*/
 
 /*
- * The display is written two by more than one task so is controlled by a
- * 'gatekeeper' task.  This is the only task that is actually permitted to
- * access the display directly.  Other tasks wanting to display a message send
- * the message to the gatekeeper.
- */
-static void prvOLEDTask( void * pvParameters );
-
-/*
- * Configure the hardware for the demo.
- */
-static void prvSetupHardware( void );
-
-/*
  * Configures the high frequency timers - those used to measure the timing
  * jitter while the real time kernel is executing.
  */
 extern void vSetupHighFrequencyTimer( void );
-
-/*
- * Hook functions that can get called by the kernel.
- */
-void vApplicationStackOverflowHook( TaskHandle_t pxTask,
-                                    char * pcTaskName );
-void vApplicationTickHook( void );
 
 /*-----------------------------------------------------------*/
 
@@ -171,6 +151,8 @@ const char * const pcWelcomeMessage = "   www.FreeRTOS.org";
 
 static TaskHandle_t prvOLEDTaskHandle;
 
+static TaskHandle_t prvDemoTaskHandle;
+
 /*-----------------------------------------------------------*/
 
 static void vInspectionTask( void * pvParameters )
@@ -180,68 +162,99 @@ static void vInspectionTask( void * pvParameters )
     while (1) {
         vTaskDelay(3000);
 
-        cm_backtrace_print_call_stack_for_thread(prvOLEDTaskHandle);
+        cm_backtrace_print_call_stack_for_thread(prvDemoTaskHandle);
     }
 }
 /*-----------------------------------------------------------*/
+
+volatile uint32_t g_temp;
+uint32_t g_stack_start_addr;
+uint32_t g_stack_size;
+
+void spin(void)
+{
+
+    register long r4 asm ("r4");
+    r4 = 0x44444444;
+    register long r5 asm ("r5");
+    r5 = 0x55555555;
+    register long r6 asm ("r6");
+    r6 = 0x66666666;
+    // Skip r7, it is the FP
+    register long r8 asm ("r8");
+    r8 = 0x88888888;
+    register long r9 asm ("r9");
+    r9 = 0x99999999;
+    register long r10 asm ("r10");
+    r10 = 0xAAAAAAAA;
+    register long r11 asm ("r11");
+    r11 = 0xBBBBBBBB;
+
+    while (1) {
+        g_temp = 99;
+
+        // Never true but compiler doesn't know since g_temp is volatile
+        if (g_temp == 0) {
+            return;
+        }
+    }
+}
+
+void intermediate2(void)
+{
+    spin();
+    printf("exiting intermediate2\n");
+}
+
+void intermediate1(void)
+{
+    intermediate2();
+    printf("exiting intermediate1\n");
+}
+
+void vDemoBacktrace(void * pvParameters)
+{
+    (void) pvParameters;
+
+    g_stack_start_addr = (uint32_t) vTaskStackAddr();
+    g_stack_size = vTaskStackSize() * sizeof( StackType_t );
+
+#ifdef DEMO_CRASH
+
+    // Jump to reserved memory... nothing to execute so crashes
+    void(* explode)(void) = (void (*)(void)) 0x10000000;
+    explode();
+
+#endif
+
+    while (1) {
+        g_temp = 99;
+
+        // Never true but compiler doesn't know since g_temp is volatile
+        if (g_temp == 0) {
+            return;
+        }
+    }
+
+    // Spin in an infinite loop within some nested functions to test backtrace
+    intermediate1();
+}
+/*-----------------------------------------------------------*/
+
 
 #define RRC_BACKTRACE_LIMIT 24
 
 static void rrc_backtrace_example(void)
 {
-	backtrace_t trace[RRC_BACKTRACE_LIMIT];
+    backtrace_t trace[RRC_BACKTRACE_LIMIT];
 
-	int count = backtrace_unwind(trace, RRC_BACKTRACE_LIMIT);
+    int count = backtrace_unwind(trace, RRC_BACKTRACE_LIMIT);
 
-	printf("backtrace: ");
-	for (int i = 0; i < count; i++) {
-		printf("%08x ", (unsigned int) trace[i].address);
-	}
-	printf("\n");
-}
-/*-----------------------------------------------------------*/
-
-/*************************************************************************
-* Please ensure to read http://www.freertos.org/portlm3sx965.html
-* which provides information on configuring and running this demo for the
-* various Luminary Micro EKs.
-*************************************************************************/
-int main( void )
-{
-    /* Initialise the trace recorder.  Use of the trace recorder is optional.
-     * See http://www.FreeRTOS.org/trace for more information and the comments at
-     * the top of this file regarding enabling trace in this demo.
-     * vTraceEnable( TRC_START ); */
-    prvSetupHardware();
-
-    printf("Init complete\n");
-
-    cm_backtrace_init("arm-cortex-qemu-demo", "1", "1");
-
-    /* Create the queue used by the OLED task.  Messages for display on the OLED
-     * are received via this queue. */
-    xOLEDQueue = xQueueCreate( mainOLED_QUEUE_SIZE, sizeof( char * ) );
-
-    /* Start the tasks defined within this file/specific to this demo. */
-    xTaskCreate( prvOLEDTask, "OLED", mainOLED_TASK_STACK_SIZE, NULL, 2, &prvOLEDTaskHandle );
-
-    /* Task to test CmBacktrace ability to dump stack from other tasks */
-    xTaskCreate( vInspectionTask, "Inspect", 180, NULL, 3, NULL );
-
-    /* Uncomment the following line to configure the high frequency interrupt
-     * used to measure the interrupt jitter time.
-     * vSetupHighFrequencyTimer(); */
-
-    rrc_backtrace_example();
-
-    /* Start the scheduler. */
-    vTaskStartScheduler();
-
-    /* Will only get here if there was insufficient memory to create the idle
-     * task. */
-    for( ; ; )
-    {
+    printf("backtrace: ");
+    for (int i = 0; i < count; i++) {
+        printf("%08x ", (unsigned int) trace[i].address);
     }
+    printf("\n");
 }
 /*-----------------------------------------------------------*/
 
@@ -283,27 +296,14 @@ void vApplicationTickHook( void )
         xQueueSendFromISR( xOLEDQueue, &pcMessage, &xHigherPriorityTaskWoken );
     }
 }
-
 /*-----------------------------------------------------------*/
 
-void spin(void)
-{
-    while (1);
-}
-
-void demoBacktrace(void)
-{
-#ifdef DEMO_CRASH
-    // Jump to reserved memory... nothing to execute so crashes
-    void(* explode)(void) = (void (*)(void)) 0x10000000;
-    explode();
-#elif defined(DEMO_INFINTE_LOOP)
-    // Spin in an infinite loop to test backtrace discovers that
-    spin();
-#endif
-}
-/*-----------------------------------------------------------*/
-
+/*
+ * The display is written two by more than one task so is controlled by a
+ * 'gatekeeper' task.  This is the only task that is actually permitted to
+ * access the display directly.  Other tasks wanting to display a message send
+ * the message to the gatekeeper.
+ */
 void prvOLEDTask( void * pvParameters )
 {
     const char * pcMessage;
@@ -364,8 +364,53 @@ void prvOLEDTask( void * pvParameters )
         sprintf( cMessage, "%s %u", pcMessage, ( unsigned int ) xTaskGetTickCount() );
         vOLEDStringDraw( cMessage, 0, ulY, mainFULL_SCALE );
         printf("%s\r\n", cMessage);
+    }
+}
+/*-----------------------------------------------------------*/
 
-        demoBacktrace();
+/*************************************************************************
+* Please ensure to read http://www.freertos.org/portlm3sx965.html
+* which provides information on configuring and running this demo for the
+* various Luminary Micro EKs.
+*************************************************************************/
+int main( void )
+{
+    /* Initialise the trace recorder.  Use of the trace recorder is optional.
+     * See http://www.FreeRTOS.org/trace for more information and the comments at
+     * the top of this file regarding enabling trace in this demo.
+     * vTraceEnable( TRC_START ); */
+    prvSetupHardware();
+
+    printf("Init complete\n");
+
+    cm_backtrace_init("arm-cortex-qemu-demo", "1", "1");
+
+    /* Create the queue used by the OLED task.  Messages for display on the OLED
+     * are received via this queue. */
+    xOLEDQueue = xQueueCreate( mainOLED_QUEUE_SIZE, sizeof( char * ) );
+
+    /* Start the tasks defined within this file/specific to this demo. */
+    xTaskCreate( prvOLEDTask, "OLED", mainOLED_TASK_STACK_SIZE, NULL, 2, &prvOLEDTaskHandle );
+
+    /* Start a simple task to test CM backtrace */
+    xTaskCreate( vDemoBacktrace, "Demo", mainOLED_TASK_STACK_SIZE, NULL, 2, &prvDemoTaskHandle );
+
+    /* Task to test CmBacktrace ability to dump stack from other tasks */
+    xTaskCreate( vInspectionTask, "Inspect", 180, NULL, 3, NULL );
+
+    /* Uncomment the following line to configure the high frequency interrupt
+     * used to measure the interrupt jitter time.
+     * vSetupHighFrequencyTimer(); */
+
+    rrc_backtrace_example();
+
+    /* Start the scheduler. */
+    vTaskStartScheduler();
+
+    /* Will only get here if there was insufficient memory to create the idle
+     * task. */
+    for( ; ; )
+    {
     }
 }
 /*-----------------------------------------------------------*/
