@@ -1,12 +1,34 @@
+#include <inttypes.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
 
-#include "LM3S6965.h"
+#include "FreeRTOS.h"
+#include "task.h"
+
+#include "cmsis_impl.h"
 
 #include "accoutrements.h"
 
+//
+// A collection of helpful code for projects with FreeRTOS, CMSIS and CmBacktrace
+//
+
+extern void NVIC_SystemReset(void);
+
 extern int _write(int handle, char *data, int size);
+
+void force_crash(uint16_t crash_type)
+{
+    __disable_irq();
+
+    // Should crash on every Cortex-M, looking at the PC of the crash we can
+    // find the crash type
+    void(* explode)(void) = (void (*)(void)) (0xFFFF0000 + crash_type);
+    explode();
+    while (1);
+}
 
 // Write to uart directly without heap
 int fault_printf(const char *__restrict format, ...)
@@ -20,6 +42,25 @@ int fault_printf(const char *__restrict format, ...)
     return len;
 }
 
+void vApplicationStackOverflowHook(TaskHandle_t pxTask, char * pcTaskName)
+{
+    ( void ) pxTask;
+
+    __disable_irq();
+
+    fault_printf("Stack overflow in task %s\n", pcTaskName);
+    force_crash(CRASH_TYPE_FREERTOS_STACK_OVERFLOW);
+}
+
+void vAssertCalled(const char * pcFile, uint32_t ulLine)
+{
+    __disable_irq();
+
+    fault_printf("FreeRTOS assert %s:%"PRIu32"\n", pcFile, ulLine);
+    force_crash(CRASH_TYPE_FREERTOS_ASSERT);
+}
+
+
 void cm_backtrace_late_fault_handler(uint32_t stacked_pc, uint32_t stacked_psr, uint32_t stacked_lr, uint32_t cfsr,
         uint32_t *backtrace_addrs, uint32_t backtrace_buf_size)
 {
@@ -30,8 +71,7 @@ void cm_backtrace_late_fault_handler(uint32_t stacked_pc, uint32_t stacked_psr, 
     (void) backtrace_addrs;
     (void) backtrace_buf_size;
 
-    fault_printf("Reset system\n\n");
-    NVIC_SystemReset();
+
     while (1);
 }
 

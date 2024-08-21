@@ -55,3 +55,5 @@ dkms.conf
 # IDE files
 org.eclipse.cdt.core.prefs
 .settings/language.settings.xml
+/STM_b-l475e-iot01a_Build/
+/Stellaris_LM3S6965_Build/
