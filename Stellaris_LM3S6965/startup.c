@@ -33,7 +33,7 @@
 void ResetISR(void);
 void HardFault_Handler(void);
 static void NmiSR(void);
-static void FaultISR(void);
+//static void FaultISR(void);
 static void IntDefaultHandler(void);
 
 //*****************************************************************************

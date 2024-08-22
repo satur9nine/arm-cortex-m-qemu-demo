@@ -14,6 +14,7 @@ RM := rm -rf
 -include libc_alt/musl/src/string/subdir.mk
 -include libc_alt/musl/src/network/subdir.mk
 -include libc_alt/musl/src/malloc/subdir.mk
+-include common/subdir.mk
 -include cm_backtrace/subdir.mk
 -include Stellaris_LM3S6965/FreeRTOS/LocalDemoFiles/subdir.mk
 -include Stellaris_LM3S6965/FreeRTOS/CommonDemoFiles/subdir.mk
@@ -70,7 +71,7 @@ main-build: arm-cortex-qemu-demo.elf secondary-outputs
 arm-cortex-qemu-demo.elf: $(OBJS) $(USER_OBJS) makefile objects.mk $(OPTIONAL_TOOL_DEPS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GNU ARM Cross C Linker'
-	arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -O2 -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -Wall -Wextra -g3 -T "/home/jacob/opensource/arm-cortex-qemu-demo/Stellaris_LM3S6965/standalone.ld" -nostartfiles -Xlinker --gc-sections -L"/home/jacob/opensource/arm-cortex-qemu-demo/Stellaris_LM3S6965/LuminaryMicroDrivers/arm-none-eabi-gcc" -Wl,-Map,"arm-cortex-qemu-demo.map" --specs=nano.specs --specs=nosys.specs -o "arm-cortex-qemu-demo.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -O2 -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -Wall -Wextra -g3 -T ../Stellaris_LM3S6965/standalone.ld -nostartfiles -Xlinker --gc-sections -L../Stellaris_LM3S6965/LuminaryMicroDrivers/arm-none-eabi-gcc -Wl,-Map,"arm-cortex-qemu-demo.map" --specs=nano.specs --specs=nosys.specs -o "arm-cortex-qemu-demo.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

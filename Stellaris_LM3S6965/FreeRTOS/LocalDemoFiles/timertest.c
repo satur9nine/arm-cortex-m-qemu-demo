@@ -27,13 +27,13 @@
 /* High speed timer test as described in main.c. */
 
 /* Scheduler includes. */
-#include <Stellaris_LM3S6965/LuminaryMicroDrivers/hw_ints.h>
-#include <Stellaris_LM3S6965/LuminaryMicroDrivers/hw_memmap.h>
-#include <Stellaris_LM3S6965/LuminaryMicroDrivers/hw_timer.h>
-#include <Stellaris_LM3S6965/LuminaryMicroDrivers/hw_types.h>
-#include <Stellaris_LM3S6965/LuminaryMicroDrivers/interrupt.h>
-#include <Stellaris_LM3S6965/LuminaryMicroDrivers/lmi_timer.h>
-#include <Stellaris_LM3S6965/LuminaryMicroDrivers/sysctl.h>
+#include <hw_ints.h>
+#include <hw_memmap.h>
+#include <hw_timer.h>
+#include <hw_types.h>
+#include <interrupt.h>
+#include <lmi_timer.h>
+#include <sysctl.h>
 #include "FreeRTOS.h"
 
 /* Library includes. */

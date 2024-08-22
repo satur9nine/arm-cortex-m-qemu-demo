@@ -1,7 +1,7 @@
 # ARM Cortex-M QEMU Demo
 
 This project contains source that demostrates the use of a variety of software
-I find useful in embedded projects:
+I find useful in embedded projects. The projects run in qemu.
 
  * FreeRTOS
  * CmBacktrace
@@ -11,13 +11,22 @@ I find useful in embedded projects:
  * CMSIS
 
 TODO:
- * Test b-l475e-iot01a (Cortex M4F with float)
+ * Investigate b-l475e-iot01a USART malfunction
  * Try Clang
- * Try Musl instead of Newlib, see also https://github.com/embeddedartistry/libc
- * Try C++ (find non-GPL STL), see also https://github.com/embeddedartistry/libcpp
+ * Try Musl instead of Newlib, possibly https://github.com/embeddedartistry/libc
+ * Try C++ (find non-GPL STL), possibly https://github.com/embeddedartistry/libcpp
  * Enable FORTIFY_SOURCE
  * Enable stack protector
-
-The target device is the Stellaris LM3S6965 run from QEMU so no physical hardware is needed.
+ * Enable MMU
+ * Add mbedTLS
 
 Tested with the arm-none-eabi-gcc version 13.3.rel1 provided by ARM.
+
+The Eclipse CDT project file is checked in and was used to generate the 
+makefiles.
+
+There are `launch.sh` scripts to run each project in qemu and wait for the
+debugger. Eclipse can be used to interactively debug.
+
+There is a Docker container that can be used to run a very recent version of
+qemu since most linux distros are behind.
