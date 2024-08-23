@@ -58,7 +58,11 @@ static void MX_USART1_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+static void stack_blow(void)
+{
+    uint8_t buf[4];
+    memset(buf, 0x44, 22);
+}
 /* USER CODE END 0 */
 
 /**
@@ -92,8 +96,14 @@ int main(void)
   MX_GPIO_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
+
+  cm_backtrace_init("arm-cortex-qemu-demo", "1", "1");
+
   printf("Init complete\n");
   printf("CPU Speed: %"PRIu32" MHz\n", SystemCoreClock / 1000 / 1000);
+
+  stack_blow();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */

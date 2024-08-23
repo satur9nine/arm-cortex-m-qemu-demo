@@ -67,6 +67,7 @@ SECTIONS
   .text :
   {
     . = ALIGN(4);
+    _stext = .;
     *(.text)           /* .text sections (code) */
     *(.text*)          /* .text* sections (code) */
     *(.glue_7)         /* glue arm to thumb code */
@@ -196,8 +197,10 @@ SECTIONS
     __HeapBase = .;
     . = . + _Min_Heap_Size;
     __HeapLimit = .;
+    _sstack = .;
     . = . + _Min_Stack_Size;
     . = ALIGN(8);
+    _estack = .;
   } >RAM
 
   /* Remove information from the compiler libraries */

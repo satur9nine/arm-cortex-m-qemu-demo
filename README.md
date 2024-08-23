@@ -11,12 +11,11 @@ I find useful in embedded projects. The projects run in qemu.
  * CMSIS
 
 TODO:
+ * Enable FORTIFY_SOURCE
  * Investigate b-l475e-iot01a USART malfunction
  * Try Clang
  * Try Musl instead of Newlib, possibly https://github.com/embeddedartistry/libc
  * Try C++ (find non-GPL STL), possibly https://github.com/embeddedartistry/libcpp
- * Enable FORTIFY_SOURCE
- * Enable stack protector
  * Enable MMU
  * Add mbedTLS
 

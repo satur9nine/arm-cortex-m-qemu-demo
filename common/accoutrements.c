@@ -71,8 +71,8 @@ void cm_backtrace_late_fault_handler(uint32_t stacked_pc, uint32_t stacked_psr, 
     (void) backtrace_addrs;
     (void) backtrace_buf_size;
 
-
-    while (1);
+    fault_printf("Resetting...\n\n");
+    NVIC_SystemReset();
 }
 
 void print_mem(const void *ptr, const size_t size)
