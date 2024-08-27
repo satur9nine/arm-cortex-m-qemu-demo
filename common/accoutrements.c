@@ -19,7 +19,7 @@ extern void NVIC_SystemReset(void);
 
 extern int _write(int handle, char *data, int size);
 
-void force_crash(uint16_t crash_type)
+__NO_RETURN void force_crash(uint16_t crash_type)
 {
     __disable_irq();
 
@@ -42,7 +42,7 @@ int fault_printf(const char *__restrict format, ...)
     return len;
 }
 
-void vApplicationStackOverflowHook(TaskHandle_t pxTask, char * pcTaskName)
+__NO_RETURN void vApplicationStackOverflowHook(TaskHandle_t pxTask, char * pcTaskName)
 {
     ( void ) pxTask;
 
@@ -52,7 +52,7 @@ void vApplicationStackOverflowHook(TaskHandle_t pxTask, char * pcTaskName)
     force_crash(CRASH_TYPE_FREERTOS_STACK_OVERFLOW);
 }
 
-void vAssertCalled(const char * pcFile, uint32_t ulLine)
+__NO_RETURN void vAssertCalled(const char * pcFile, uint32_t ulLine)
 {
     __disable_irq();
 
@@ -61,7 +61,7 @@ void vAssertCalled(const char * pcFile, uint32_t ulLine)
 }
 
 
-void cm_backtrace_late_fault_handler(uint32_t stacked_pc, uint32_t stacked_psr, uint32_t stacked_lr, uint32_t cfsr,
+__NO_RETURN void cm_backtrace_late_fault_handler(uint32_t stacked_pc, uint32_t stacked_psr, uint32_t stacked_lr, uint32_t cfsr,
         uint32_t *backtrace_addrs, uint32_t backtrace_buf_size)
 {
     (void) stacked_pc;

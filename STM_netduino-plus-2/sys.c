@@ -4,8 +4,6 @@
 #include "main.h"
 #include "accoutrements.h"
 
-char *__env[1] = { 0 };
-char **environ = __env;
 
 int __io_putchar(int ch)
 {
@@ -29,44 +27,6 @@ int __io_getchar(void)
     force_crash(CRASH_TYPE_HAL_ERROR);
   }
   return ch;
-}
-
-int _close(int file) {
-  (void) file;
-  return -1;
-}
-
-int _fstat(int file, struct stat *st) {
-  (void) file;
-  st->st_mode = S_IFCHR;
-  return 0;
-}
-
-int _isatty(int file) {
-  (void) file;
-  return 1;
-}
-
-int _lseek(int file, int ptr, int dir) {
-  (void) file;
-  (void) ptr;
-  (void) dir;
-  return 0;
-}
-
-void _exit(int status) {
-  (void) status;
-  __asm("BKPT #0");
-  while (1);
-}
-
-void _kill(int pid, int sig) {
-  (void) pid;
-  (void) sig;
-}
-
-int _getpid(void) {
-  return -1;
 }
 
 int _write(int file, char *ptr, int len)

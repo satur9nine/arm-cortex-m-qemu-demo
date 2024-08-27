@@ -1,7 +1,7 @@
 # ARM Cortex-M QEMU Demo
 
 This project contains source that demostrates the use of a variety of software
-I find useful in embedded projects. The projects run in qemu.
+and techniques I find useful in embedded projects. The projects run in qemu.
 
  * FreeRTOS
  * CmBacktrace
@@ -9,10 +9,10 @@ I find useful in embedded projects. The projects run in qemu.
  * Newlib-nano with malloc and printf implemented
  * Selected faster C standard library routines from Newlib (non-nano) and MUSL
  * CMSIS
+ * FORTIFY_SOURCE (level 3)
+ * Stack protector (strong)
 
 TODO:
- * Enable FORTIFY_SOURCE
- * Investigate b-l475e-iot01a USART malfunction
  * Try Clang
  * Try Musl instead of Newlib, possibly https://github.com/embeddedartistry/libc
  * Try C++ (find non-GPL STL), possibly https://github.com/embeddedartistry/libcpp
