@@ -16,6 +16,7 @@ RM := rm -rf
 -include libc_alt/musl/src/malloc/subdir.mk
 -include common/subdir.mk
 -include cm_backtrace/subdir.mk
+-include STM_b-l475e-iot01a/stm32l4xx_hal_driver/Src/subdir.mk
 -include STM_b-l475e-iot01a/subdir.mk
 -include FreeRTOS/Source/portable/GCC/ARM_CM4F/subdir.mk
 -include FreeRTOS/Source/subdir.mk

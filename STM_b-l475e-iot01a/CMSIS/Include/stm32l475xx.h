@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * @file    stm32l476xx.h
+  * @file    stm32l475xx.h
   * @author  MCD Application Team
-  * @brief   CMSIS STM32L476xx Device Peripheral Access Layer Header File.
+  * @brief   CMSIS STM32L475xx Device Peripheral Access Layer Header File.
   *
   *          This file contains:
   *           - Data structures and the address mapping for all peripherals
@@ -26,12 +26,12 @@
   * @{
   */
 
-/** @addtogroup stm32l476xx
+/** @addtogroup stm32l475xx
   * @{
   */
 
-#ifndef __STM32L476xx_H
-#define __STM32L476xx_H
+#ifndef __STM32L475xx_H
+#define __STM32L475xx_H
 
 #ifdef __cplusplus
  extern "C" {
@@ -153,7 +153,6 @@ typedef enum
   SAI2_IRQn                   = 75,     /*!< Serial Audio Interface 2 global interrupt                         */
   SWPMI1_IRQn                 = 76,     /*!< Serial Wire Interface 1 global interrupt                          */
   TSC_IRQn                    = 77,     /*!< Touch Sense Controller global interrupt                           */
-  LCD_IRQn                    = 78,     /*!< LCD global interrupt                                              */
   RNG_IRQn                    = 80,     /*!< RNG global interrupt                                              */
   FPU_IRQn                    = 81      /*!< FPU global interrupt                                              */
 } IRQn_Type;
@@ -576,20 +575,6 @@ typedef struct
   __IO uint32_t SR;          /*!< IWDG Status register,    Address offset: 0x0C */
   __IO uint32_t WINR;        /*!< IWDG Window register,    Address offset: 0x10 */
 } IWDG_TypeDef;
-
-/**
-  * @brief LCD
-  */
-
-typedef struct
-{
-  __IO uint32_t CR;          /*!< LCD control register,              Address offset: 0x00 */
-  __IO uint32_t FCR;         /*!< LCD frame control register,        Address offset: 0x04 */
-  __IO uint32_t SR;          /*!< LCD status register,               Address offset: 0x08 */
-  __IO uint32_t CLR;         /*!< LCD clear register,                Address offset: 0x0C */
-  uint32_t RESERVED;         /*!< Reserved,                          Address offset: 0x10 */
-  __IO uint32_t RAM[16];     /*!< LCD display memory,           Address offset: 0x14-0x50 */
-} LCD_TypeDef;
 
 /**
   * @brief LPTIMER
@@ -1170,7 +1155,6 @@ typedef struct
 #define TIM5_BASE             (APB1PERIPH_BASE + 0x0C00UL)
 #define TIM6_BASE             (APB1PERIPH_BASE + 0x1000UL)
 #define TIM7_BASE             (APB1PERIPH_BASE + 0x1400UL)
-#define LCD_BASE              (APB1PERIPH_BASE + 0x2400UL)
 #define RTC_BASE              (APB1PERIPH_BASE + 0x2800UL)
 #define WWDG_BASE             (APB1PERIPH_BASE + 0x2C00UL)
 #define IWDG_BASE             (APB1PERIPH_BASE + 0x3000UL)
@@ -1322,7 +1306,6 @@ typedef struct
 #define TIM5                ((TIM_TypeDef *) TIM5_BASE)
 #define TIM6                ((TIM_TypeDef *) TIM6_BASE)
 #define TIM7                ((TIM_TypeDef *) TIM7_BASE)
-#define LCD                 ((LCD_TypeDef *) LCD_BASE)
 #define RTC                 ((RTC_TypeDef *) RTC_BASE)
 #define WWDG                ((WWDG_TypeDef *) WWDG_BASE)
 #define IWDG                ((IWDG_TypeDef *) IWDG_BASE)
@@ -7442,11 +7425,8 @@ typedef struct
 #define EXTI_IMR2_IM38_Pos       (6U)
 #define EXTI_IMR2_IM38_Msk       (0x1UL << EXTI_IMR2_IM38_Pos)                 /*!< 0x00000040 */
 #define EXTI_IMR2_IM38           EXTI_IMR2_IM38_Msk                            /*!< Interrupt Mask on line 38 */
-#define EXTI_IMR2_IM39_Pos       (7U)
-#define EXTI_IMR2_IM39_Msk       (0x1UL << EXTI_IMR2_IM39_Pos)                 /*!< 0x00000080 */
-#define EXTI_IMR2_IM39           EXTI_IMR2_IM39_Msk                            /*!< Interrupt Mask on line 39 */
 #define EXTI_IMR2_IM_Pos         (0U)
-#define EXTI_IMR2_IM_Msk         (0xFFUL << EXTI_IMR2_IM_Pos)                  /*!< 0x000000FF */
+#define EXTI_IMR2_IM_Msk         (0x7FUL << EXTI_IMR2_IM_Pos)                  /*!< 0x0000007F */
 #define EXTI_IMR2_IM             EXTI_IMR2_IM_Msk                              /*!< Interrupt Mask all        */
 
 /*******************  Bit definition for EXTI_EMR2 register  ******************/
@@ -7471,11 +7451,8 @@ typedef struct
 #define EXTI_EMR2_EM38_Pos       (6U)
 #define EXTI_EMR2_EM38_Msk       (0x1UL << EXTI_EMR2_EM38_Pos)                 /*!< 0x00000040 */
 #define EXTI_EMR2_EM38           EXTI_EMR2_EM38_Msk                            /*!< Event Mask on line 38 */
-#define EXTI_EMR2_EM39_Pos       (7U)
-#define EXTI_EMR2_EM39_Msk       (0x1UL << EXTI_EMR2_EM39_Pos)                 /*!< 0x00000080 */
-#define EXTI_EMR2_EM39           EXTI_EMR2_EM39_Msk                            /*!< Event Mask on line 39 */
 #define EXTI_EMR2_EM_Pos         (0U)
-#define EXTI_EMR2_EM_Msk         (0xFFUL << EXTI_EMR2_EM_Pos)                  /*!< 0x000000FF */
+#define EXTI_EMR2_EM_Msk         (0x7FUL << EXTI_EMR2_EM_Pos)                  /*!< 0x0000007F */
 #define EXTI_EMR2_EM             EXTI_EMR2_EM_Msk                              /*!< Interrupt Mask all        */
 
 /******************  Bit definition for EXTI_RTSR2 register  ******************/
@@ -9700,9 +9677,6 @@ typedef struct
 
 
 /********************  Bit definition for PWR_CR4 register  ********************/
-#define PWR_CR4_EXT_SMPS_ON_Pos      (13U)
-#define PWR_CR4_EXT_SMPS_ON_Msk      (0x1UL << PWR_CR4_EXT_SMPS_ON_Pos)         /*!< 0x00002000 */
-#define PWR_CR4_EXT_SMPS_ON          PWR_CR4_EXT_SMPS_ON_Msk                   /*!< Inform the internal regulator on external SMPS switch status */
 #define PWR_CR4_VBRS_Pos             (9U)
 #define PWR_CR4_VBRS_Msk             (0x1UL << PWR_CR4_VBRS_Pos)               /*!< 0x00000200 */
 #define PWR_CR4_VBRS                 PWR_CR4_VBRS_Msk                          /*!< VBAT Battery charging Resistor Selection */
@@ -9729,9 +9703,6 @@ typedef struct
 #define PWR_SR1_WUFI_Pos             (15U)
 #define PWR_SR1_WUFI_Msk             (0x1UL << PWR_SR1_WUFI_Pos)               /*!< 0x00008000 */
 #define PWR_SR1_WUFI                 PWR_SR1_WUFI_Msk                          /*!< Wake-Up Flag Internal */
-#define PWR_SR1_EXT_SMPS_RDY_Pos     (13U)
-#define PWR_SR1_EXT_SMPS_RDY_Msk     (0x1UL << PWR_SR1_EXT_SMPS_RDY_Pos)        /*!< 0x00002000 */
-#define PWR_SR1_EXT_SMPS_RDY         PWR_SR1_EXT_SMPS_RDY_Msk                  /*!< Switching to external SMPS Ready Flag */
 #define PWR_SR1_SBF_Pos              (8U)
 #define PWR_SR1_SBF_Msk              (0x1UL << PWR_SR1_SBF_Pos)                /*!< 0x00000100 */
 #define PWR_SR1_SBF                  PWR_SR1_SBF_Msk                           /*!< Stand-By Flag */
@@ -11046,9 +11017,6 @@ typedef struct
 #define RCC_APB1RSTR1_TIM7RST_Pos            (5U)
 #define RCC_APB1RSTR1_TIM7RST_Msk            (0x1UL << RCC_APB1RSTR1_TIM7RST_Pos) /*!< 0x00000020 */
 #define RCC_APB1RSTR1_TIM7RST                RCC_APB1RSTR1_TIM7RST_Msk
-#define RCC_APB1RSTR1_LCDRST_Pos             (9U)
-#define RCC_APB1RSTR1_LCDRST_Msk             (0x1UL << RCC_APB1RSTR1_LCDRST_Pos) /*!< 0x00000200 */
-#define RCC_APB1RSTR1_LCDRST                 RCC_APB1RSTR1_LCDRST_Msk
 #define RCC_APB1RSTR1_SPI2RST_Pos            (14U)
 #define RCC_APB1RSTR1_SPI2RST_Msk            (0x1UL << RCC_APB1RSTR1_SPI2RST_Pos) /*!< 0x00004000 */
 #define RCC_APB1RSTR1_SPI2RST                RCC_APB1RSTR1_SPI2RST_Msk
@@ -11220,9 +11188,6 @@ typedef struct
 #define RCC_APB1ENR1_TIM7EN_Pos              (5U)
 #define RCC_APB1ENR1_TIM7EN_Msk              (0x1UL << RCC_APB1ENR1_TIM7EN_Pos) /*!< 0x00000020 */
 #define RCC_APB1ENR1_TIM7EN                  RCC_APB1ENR1_TIM7EN_Msk
-#define RCC_APB1ENR1_LCDEN_Pos               (9U)
-#define RCC_APB1ENR1_LCDEN_Msk               (0x1UL << RCC_APB1ENR1_LCDEN_Pos) /*!< 0x00000200 */
-#define RCC_APB1ENR1_LCDEN                   RCC_APB1ENR1_LCDEN_Msk
 #define RCC_APB1ENR1_WWDGEN_Pos              (11U)
 #define RCC_APB1ENR1_WWDGEN_Msk              (0x1UL << RCC_APB1ENR1_WWDGEN_Pos) /*!< 0x00000800 */
 #define RCC_APB1ENR1_WWDGEN                  RCC_APB1ENR1_WWDGEN_Msk
@@ -11406,9 +11371,6 @@ typedef struct
 #define RCC_APB1SMENR1_TIM7SMEN_Pos          (5U)
 #define RCC_APB1SMENR1_TIM7SMEN_Msk          (0x1UL << RCC_APB1SMENR1_TIM7SMEN_Pos) /*!< 0x00000020 */
 #define RCC_APB1SMENR1_TIM7SMEN              RCC_APB1SMENR1_TIM7SMEN_Msk
-#define RCC_APB1SMENR1_LCDSMEN_Pos           (9U)
-#define RCC_APB1SMENR1_LCDSMEN_Msk           (0x1UL << RCC_APB1SMENR1_LCDSMEN_Pos) /*!< 0x00000200 */
-#define RCC_APB1SMENR1_LCDSMEN               RCC_APB1SMENR1_LCDSMEN_Msk
 #define RCC_APB1SMENR1_WWDGSMEN_Pos          (11U)
 #define RCC_APB1SMENR1_WWDGSMEN_Msk          (0x1UL << RCC_APB1SMENR1_WWDGSMEN_Pos) /*!< 0x00000800 */
 #define RCC_APB1SMENR1_WWDGSMEN              RCC_APB1SMENR1_WWDGSMEN_Msk
@@ -12752,125 +12714,6 @@ typedef struct
 #define SAI_xDR_DATA_Pos           (0U)
 #define SAI_xDR_DATA_Msk           (0xFFFFFFFFUL << SAI_xDR_DATA_Pos)          /*!< 0xFFFFFFFF */
 #define SAI_xDR_DATA               SAI_xDR_DATA_Msk
-
-/******************************************************************************/
-/*                                                                            */
-/*                          LCD Controller (LCD)                              */
-/*                                                                            */
-/******************************************************************************/
-
-/*******************  Bit definition for LCD_CR register  *********************/
-#define LCD_CR_LCDEN_Pos            (0U)
-#define LCD_CR_LCDEN_Msk            (0x1UL << LCD_CR_LCDEN_Pos)                /*!< 0x00000001 */
-#define LCD_CR_LCDEN                LCD_CR_LCDEN_Msk                           /*!< LCD Enable Bit */
-#define LCD_CR_VSEL_Pos             (1U)
-#define LCD_CR_VSEL_Msk             (0x1UL << LCD_CR_VSEL_Pos)                 /*!< 0x00000002 */
-#define LCD_CR_VSEL                 LCD_CR_VSEL_Msk                            /*!< Voltage source selector Bit */
-
-#define LCD_CR_DUTY_Pos             (2U)
-#define LCD_CR_DUTY_Msk             (0x7UL << LCD_CR_DUTY_Pos)                 /*!< 0x0000001C */
-#define LCD_CR_DUTY                 LCD_CR_DUTY_Msk                            /*!< DUTY[2:0] bits (Duty selector) */
-#define LCD_CR_DUTY_0               (0x1UL << LCD_CR_DUTY_Pos)                 /*!< 0x00000004 */
-#define LCD_CR_DUTY_1               (0x2UL << LCD_CR_DUTY_Pos)                 /*!< 0x00000008 */
-#define LCD_CR_DUTY_2               (0x4UL << LCD_CR_DUTY_Pos)                 /*!< 0x00000010 */
-
-#define LCD_CR_BIAS_Pos             (5U)
-#define LCD_CR_BIAS_Msk             (0x3UL << LCD_CR_BIAS_Pos)                 /*!< 0x00000060 */
-#define LCD_CR_BIAS                 LCD_CR_BIAS_Msk                            /*!< BIAS[1:0] bits (Bias selector) */
-#define LCD_CR_BIAS_0               (0x1UL << LCD_CR_BIAS_Pos)                 /*!< 0x00000020 */
-#define LCD_CR_BIAS_1               (0x2UL << LCD_CR_BIAS_Pos)                 /*!< 0x00000040 */
-
-#define LCD_CR_MUX_SEG_Pos          (7U)
-#define LCD_CR_MUX_SEG_Msk          (0x1UL << LCD_CR_MUX_SEG_Pos)              /*!< 0x00000080 */
-#define LCD_CR_MUX_SEG              LCD_CR_MUX_SEG_Msk                         /*!< Mux Segment Enable Bit */
-#define LCD_CR_BUFEN_Pos            (8U)
-#define LCD_CR_BUFEN_Msk            (0x1UL << LCD_CR_BUFEN_Pos)                /*!< 0x00000100 */
-#define LCD_CR_BUFEN                LCD_CR_BUFEN_Msk                           /*!< Voltage output buffer enable */
-
-/*******************  Bit definition for LCD_FCR register  ********************/
-#define LCD_FCR_HD_Pos              (0U)
-#define LCD_FCR_HD_Msk              (0x1UL << LCD_FCR_HD_Pos)                  /*!< 0x00000001 */
-#define LCD_FCR_HD                  LCD_FCR_HD_Msk                             /*!< High Drive Enable Bit */
-#define LCD_FCR_SOFIE_Pos           (1U)
-#define LCD_FCR_SOFIE_Msk           (0x1UL << LCD_FCR_SOFIE_Pos)               /*!< 0x00000002 */
-#define LCD_FCR_SOFIE               LCD_FCR_SOFIE_Msk                          /*!< Start of Frame Interrupt Enable Bit */
-#define LCD_FCR_UDDIE_Pos           (3U)
-#define LCD_FCR_UDDIE_Msk           (0x1UL << LCD_FCR_UDDIE_Pos)               /*!< 0x00000008 */
-#define LCD_FCR_UDDIE               LCD_FCR_UDDIE_Msk                          /*!< Update Display Done Interrupt Enable Bit */
-
-#define LCD_FCR_PON_Pos             (4U)
-#define LCD_FCR_PON_Msk             (0x7UL << LCD_FCR_PON_Pos)                 /*!< 0x00000070 */
-#define LCD_FCR_PON                 LCD_FCR_PON_Msk                            /*!< PON[2:0] bits (Pulse ON Duration) */
-#define LCD_FCR_PON_0               (0x1UL << LCD_FCR_PON_Pos)                 /*!< 0x00000010 */
-#define LCD_FCR_PON_1               (0x2UL << LCD_FCR_PON_Pos)                 /*!< 0x00000020 */
-#define LCD_FCR_PON_2               (0x4UL << LCD_FCR_PON_Pos)                 /*!< 0x00000040 */
-
-#define LCD_FCR_DEAD_Pos            (7U)
-#define LCD_FCR_DEAD_Msk            (0x7UL << LCD_FCR_DEAD_Pos)                /*!< 0x00000380 */
-#define LCD_FCR_DEAD                LCD_FCR_DEAD_Msk                           /*!< DEAD[2:0] bits (DEAD Time) */
-#define LCD_FCR_DEAD_0              (0x1UL << LCD_FCR_DEAD_Pos)                /*!< 0x00000080 */
-#define LCD_FCR_DEAD_1              (0x2UL << LCD_FCR_DEAD_Pos)                /*!< 0x00000100 */
-#define LCD_FCR_DEAD_2              (0x4UL << LCD_FCR_DEAD_Pos)                /*!< 0x00000200 */
-
-#define LCD_FCR_CC_Pos              (10U)
-#define LCD_FCR_CC_Msk              (0x7UL << LCD_FCR_CC_Pos)                  /*!< 0x00001C00 */
-#define LCD_FCR_CC                  LCD_FCR_CC_Msk                             /*!< CC[2:0] bits (Contrast Control) */
-#define LCD_FCR_CC_0                (0x1UL << LCD_FCR_CC_Pos)                  /*!< 0x00000400 */
-#define LCD_FCR_CC_1                (0x2UL << LCD_FCR_CC_Pos)                  /*!< 0x00000800 */
-#define LCD_FCR_CC_2                (0x4UL << LCD_FCR_CC_Pos)                  /*!< 0x00001000 */
-
-#define LCD_FCR_BLINKF_Pos          (13U)
-#define LCD_FCR_BLINKF_Msk          (0x7UL << LCD_FCR_BLINKF_Pos)              /*!< 0x0000E000 */
-#define LCD_FCR_BLINKF              LCD_FCR_BLINKF_Msk                         /*!< BLINKF[2:0] bits (Blink Frequency) */
-#define LCD_FCR_BLINKF_0            (0x1UL << LCD_FCR_BLINKF_Pos)              /*!< 0x00002000 */
-#define LCD_FCR_BLINKF_1            (0x2UL << LCD_FCR_BLINKF_Pos)              /*!< 0x00004000 */
-#define LCD_FCR_BLINKF_2            (0x4UL << LCD_FCR_BLINKF_Pos)              /*!< 0x00008000 */
-
-#define LCD_FCR_BLINK_Pos           (16U)
-#define LCD_FCR_BLINK_Msk           (0x3UL << LCD_FCR_BLINK_Pos)               /*!< 0x00030000 */
-#define LCD_FCR_BLINK               LCD_FCR_BLINK_Msk                          /*!< BLINK[1:0] bits (Blink Enable) */
-#define LCD_FCR_BLINK_0             (0x1UL << LCD_FCR_BLINK_Pos)               /*!< 0x00010000 */
-#define LCD_FCR_BLINK_1             (0x2UL << LCD_FCR_BLINK_Pos)               /*!< 0x00020000 */
-
-#define LCD_FCR_DIV_Pos             (18U)
-#define LCD_FCR_DIV_Msk             (0xFUL << LCD_FCR_DIV_Pos)                 /*!< 0x003C0000 */
-#define LCD_FCR_DIV                 LCD_FCR_DIV_Msk                            /*!< DIV[3:0] bits (Divider) */
-#define LCD_FCR_PS_Pos              (22U)
-#define LCD_FCR_PS_Msk              (0xFUL << LCD_FCR_PS_Pos)                  /*!< 0x03C00000 */
-#define LCD_FCR_PS                  LCD_FCR_PS_Msk                             /*!< PS[3:0] bits (Prescaler) */
-
-/*******************  Bit definition for LCD_SR register  *********************/
-#define LCD_SR_ENS_Pos              (0U)
-#define LCD_SR_ENS_Msk              (0x1UL << LCD_SR_ENS_Pos)                  /*!< 0x00000001 */
-#define LCD_SR_ENS                  LCD_SR_ENS_Msk                             /*!< LCD Enabled Bit */
-#define LCD_SR_SOF_Pos              (1U)
-#define LCD_SR_SOF_Msk              (0x1UL << LCD_SR_SOF_Pos)                  /*!< 0x00000002 */
-#define LCD_SR_SOF                  LCD_SR_SOF_Msk                             /*!< Start Of Frame Flag Bit */
-#define LCD_SR_UDR_Pos              (2U)
-#define LCD_SR_UDR_Msk              (0x1UL << LCD_SR_UDR_Pos)                  /*!< 0x00000004 */
-#define LCD_SR_UDR                  LCD_SR_UDR_Msk                             /*!< Update Display Request Bit */
-#define LCD_SR_UDD_Pos              (3U)
-#define LCD_SR_UDD_Msk              (0x1UL << LCD_SR_UDD_Pos)                  /*!< 0x00000008 */
-#define LCD_SR_UDD                  LCD_SR_UDD_Msk                             /*!< Update Display Done Flag Bit */
-#define LCD_SR_RDY_Pos              (4U)
-#define LCD_SR_RDY_Msk              (0x1UL << LCD_SR_RDY_Pos)                  /*!< 0x00000010 */
-#define LCD_SR_RDY                  LCD_SR_RDY_Msk                             /*!< Ready Flag Bit */
-#define LCD_SR_FCRSR_Pos            (5U)
-#define LCD_SR_FCRSR_Msk            (0x1UL << LCD_SR_FCRSR_Pos)                /*!< 0x00000020 */
-#define LCD_SR_FCRSR                LCD_SR_FCRSR_Msk                           /*!< LCD FCR Register Synchronization Flag Bit */
-
-/*******************  Bit definition for LCD_CLR register  ********************/
-#define LCD_CLR_SOFC_Pos            (1U)
-#define LCD_CLR_SOFC_Msk            (0x1UL << LCD_CLR_SOFC_Pos)                /*!< 0x00000002 */
-#define LCD_CLR_SOFC                LCD_CLR_SOFC_Msk                           /*!< Start Of Frame Flag Clear Bit */
-#define LCD_CLR_UDDC_Pos            (3U)
-#define LCD_CLR_UDDC_Msk            (0x1UL << LCD_CLR_UDDC_Pos)                /*!< 0x00000008 */
-#define LCD_CLR_UDDC                LCD_CLR_UDDC_Msk                           /*!< Update Display Done Flag Clear Bit */
-
-/*******************  Bit definition for LCD_RAM register  ********************/
-#define LCD_RAM_SEGMENT_DATA_Pos    (0U)
-#define LCD_RAM_SEGMENT_DATA_Msk    (0xFFFFFFFFUL << LCD_RAM_SEGMENT_DATA_Pos) /*!< 0xFFFFFFFF */
-#define LCD_RAM_SEGMENT_DATA        LCD_RAM_SEGMENT_DATA_Msk                   /*!< Segment Data Bits */
 
 /******************************************************************************/
 /*                                                                            */
@@ -17966,9 +17809,6 @@ typedef struct
 /****************** I2C Instances : wakeup capability from stop modes *********/
 #define IS_I2C_WAKEUP_FROMSTOP_INSTANCE(INSTANCE) IS_I2C_ALL_INSTANCE(INSTANCE)
 
-/******************************* LCD Instances ********************************/
-#define IS_LCD_ALL_INSTANCE(INSTANCE) ((INSTANCE) == LCD)
-
 /******************************* HCD Instances *******************************/
 #define IS_HCD_ALL_INSTANCE(INSTANCE) ((INSTANCE) == USB_OTG_FS)
 
@@ -18490,7 +18330,7 @@ typedef struct
 }
 #endif /* __cplusplus */
 
-#endif /* __STM32L476xx_H */
+#endif /* __STM32L475xx_H */
 
 /**
   * @}

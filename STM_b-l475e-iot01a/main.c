@@ -103,15 +103,10 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int i = 0;
   while (1)
   {
     /* USER CODE END WHILE */
-    int sec = HAL_GetTick() / 1000;
-    if (sec > i) {
-    	i = sec;
-    	printf("Up seconds %d\n", i);
-    }
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -167,8 +162,6 @@ void SystemClock_Config(void)
   }
 }
 
-volatile uint32_t g_temp;
-
 /**
   * @brief USART1 Initialization Function
   * @param None
@@ -194,19 +187,6 @@ static void MX_USART1_UART_Init(void)
   huart1.Init.OverSampling = UART_OVERSAMPLING_16;
   huart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
   huart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-
-  huart1.Instance->RTOR = 0xAAAABBBB;
-
-  g_temp = huart1.Instance->RTOR;
-  while (g_temp == 0) {}
-
-  uint16_t *rtor_hw = (uint16_t *) &huart1.Instance->RTOR;
-  rtor_hw[0] = (uint16_t) 0xCCCC;
-
-  g_temp = huart1.Instance->RTOR;
-  while (g_temp == 0) {}
-
-
   if (HAL_UART_Init(&huart1) != HAL_OK)
   {
     Error_Handler();
