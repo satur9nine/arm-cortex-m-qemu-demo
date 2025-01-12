@@ -60,7 +60,6 @@ __NO_RETURN void vAssertCalled(const char * pcFile, uint32_t ulLine)
     force_crash(CRASH_TYPE_FREERTOS_ASSERT);
 }
 
-
 __NO_RETURN void cm_backtrace_late_fault_handler(uint32_t stacked_pc, uint32_t stacked_psr, uint32_t stacked_lr, uint32_t cfsr,
         uint32_t *backtrace_addrs, uint32_t backtrace_buf_size)
 {

@@ -58,3 +58,5 @@ org.eclipse.cdt.core.prefs
 .settings
 #/STM_netduino-plus-2_Build/
 #/Stellaris_LM3S6965_Build/
+/STM_netduino-plus-2_Build/
+/Stellaris_LM3S6965_Build/

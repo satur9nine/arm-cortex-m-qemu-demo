@@ -8,6 +8,7 @@ C_SRCS += \
 ../common/heap_newlib.c \
 ../common/security.c \
 ../common/security_tests.c \
+../common/strntoint_r.c \
 ../common/sys_shared.c 
 
 OBJS += \
@@ -15,6 +16,7 @@ OBJS += \
 ./common/heap_newlib.o \
 ./common/security.o \
 ./common/security_tests.o \
+./common/strntoint_r.o \
 ./common/sys_shared.o 
 
 C_DEPS += \
@@ -22,6 +24,7 @@ C_DEPS += \
 ./common/heap_newlib.d \
 ./common/security.d \
 ./common/security_tests.d \
+./common/strntoint_r.d \
 ./common/sys_shared.d 
 
 
