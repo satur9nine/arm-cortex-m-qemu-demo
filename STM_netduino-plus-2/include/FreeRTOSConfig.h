@@ -42,10 +42,10 @@
 #define configUSE_PREEMPTION			1
 #define configUSE_IDLE_HOOK				0
 #define configUSE_TICK_HOOK				0
-#define configCPU_CLOCK_HZ				( ( unsigned long ) 80 * 1000 * 1000 )
+#define configCPU_CLOCK_HZ				( ( unsigned long ) 168 * 1000 * 1000 ) // its running max speed in QEMU
 #define configTICK_RATE_HZ				( ( TickType_t ) 1000 )
-#define configMINIMAL_STACK_SIZE		( ( unsigned short ) 120 )
-#define configMAX_TASK_NAME_LEN			( 12 )
+#define configMINIMAL_STACK_SIZE		( ( unsigned short ) 180 )
+#define configMAX_TASK_NAME_LEN			( 24 )
 #define configUSE_TRACE_FACILITY		1
 #define configUSE_16_BIT_TICKS			0
 #define configIDLE_SHOULD_YIELD			0
@@ -61,7 +61,7 @@
 #define configMAX_PRIORITIES			( 6UL )
 #define configMAX_CO_ROUTINE_PRIORITIES ( 2 )
 #define configQUEUE_REGISTRY_SIZE		10
-#define configSUPPORT_STATIC_ALLOCATION	1
+#define configSUPPORT_STATIC_ALLOCATION	0
 
 /* Timer related defines. */
 #define configUSE_TIMERS				1
@@ -93,10 +93,41 @@ readable ASCII form.  See the notes in the implementation of vTaskList() within
 FreeRTOS/Source/tasks.c for limitations. */
 #define configUSE_STATS_FORMATTING_FUNCTIONS	1
 
+#ifdef NOT_QEMU
+/* Cortex-M specific definitions. */
+#ifdef __NVIC_PRIO_BITS
+ /* __BVIC_PRIO_BITS will be specified when CMSIS is being used. */
+ #define configPRIO_BITS                        __NVIC_PRIO_BITS
+#else
+ #define configPRIO_BITS                        4        /* 15 priority levels */
+#endif
+
+/* The lowest interrupt priority that can be used in a call to a "set priority"
+function. */
+#define configLIBRARY_LOWEST_INTERRUPT_PRIORITY     0xf
+
+/* The highest interrupt priority that can be used by any interrupt service
+routine that makes calls to interrupt safe FreeRTOS API functions.  DO NOT CALL
+INTERRUPT SAFE FREERTOS API FUNCTIONS FROM ANY INTERRUPT THAT HAS A HIGHER
+PRIORITY THAN THIS! (higher priorities are lower numeric values. */
+#define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY  5
+
+/* Interrupt priorities used by the kernel port layer itself.  These are generic
+to all Cortex-M ports, and do not rely on any particular library functions. */
+#define configKERNEL_INTERRUPT_PRIORITY     ( configLIBRARY_LOWEST_INTERRUPT_PRIORITY << (8 - configPRIO_BITS) )
+/* !!!! configMAX_SYSCALL_INTERRUPT_PRIORITY must not be set to zero !!!!
+See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */
+#define configMAX_SYSCALL_INTERRUPT_PRIORITY  ( configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY << (8 - configPRIO_BITS) )
+
+#else
+
 #define configKERNEL_INTERRUPT_PRIORITY 		( 255 )	/* All eight bits as QEMU doesn't model the priority bits. */
 /* !!!! configMAX_SYSCALL_INTERRUPT_PRIORITY must not be set to zero !!!!
 See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */
-#define configMAX_SYSCALL_INTERRUPT_PRIORITY 	( 4 )
+#define configMAX_SYSCALL_INTERRUPT_PRIORITY 	( 16 )
+
+#endif // NOT_QEMU
+
 
 /* Use the Cortex-M3 optimised task selection rather than the generic C code
 version. */
@@ -119,5 +150,14 @@ void vAssertCalled( const char *pcFile, unsigned long ulLine );
 /* Include the FreeRTOS+Trace FreeRTOS trace macro definitions.  See the comments
 at the top of main.c for enabling the trace recorder.
 #include "trcRecorder.h" */
+
+ /* Definitions that map the FreeRTOS port interrupt handlers to their CMSIS
+    standard names. */
+#define vPortSVCHandler    SVC_Handler
+#define xPortPendSVHandler PendSV_Handler
+
+/* IMPORTANT: This define MUST be commented when used with STM32Cube firmware,
+              to prevent overwriting SysTick_Handler defined within STM32Cube HAL */
+/* #define xPortSysTickHandler SysTick_Handler */
 
 #endif /* FREERTOS_CONFIG_H */

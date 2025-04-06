@@ -19,8 +19,27 @@ C_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
+CMSIS_RTOS \
 FreeRTOS/Source \
 FreeRTOS/Source/portable/GCC/ARM_CM4F \
+LwIP/src/api \
+LwIP/src/apps/altcp_tls \
+LwIP/src/apps/http \
+LwIP/src/apps/lwiperf \
+LwIP/src/apps/mdns \
+LwIP/src/apps/mqtt \
+LwIP/src/apps/netbiosns \
+LwIP/src/apps/smtp \
+LwIP/src/apps/snmp \
+LwIP/src/apps/sntp \
+LwIP/src/apps/tftp \
+LwIP/src/core \
+LwIP/src/core/ipv4 \
+LwIP/src/core/ipv6 \
+LwIP/src/netif \
+LwIP/src/netif/ppp \
+LwIP/src/netif/ppp/polarssl \
+LwIP/system/OS \
 STM_netduino-plus-2/STM32F4xx_HAL_Driver/Src \
 STM_netduino-plus-2 \
 cm_backtrace \

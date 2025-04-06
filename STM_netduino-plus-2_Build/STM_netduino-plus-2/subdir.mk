@@ -4,6 +4,9 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../STM_netduino-plus-2/lwip_http_client.c \
+../STM_netduino-plus-2/lwip_http_server.c \
+../STM_netduino-plus-2/lwip_http_server2.c \
 ../STM_netduino-plus-2/main.c \
 ../STM_netduino-plus-2/stm32f4xx_hal_msp.c \
 ../STM_netduino-plus-2/stm32f4xx_it.c \
@@ -14,6 +17,9 @@ S_UPPER_SRCS += \
 ../STM_netduino-plus-2/startup_stm32f405rgtx.S 
 
 OBJS += \
+./STM_netduino-plus-2/lwip_http_client.o \
+./STM_netduino-plus-2/lwip_http_server.o \
+./STM_netduino-plus-2/lwip_http_server2.o \
 ./STM_netduino-plus-2/main.o \
 ./STM_netduino-plus-2/startup_stm32f405rgtx.o \
 ./STM_netduino-plus-2/stm32f4xx_hal_msp.o \
@@ -25,6 +31,9 @@ S_UPPER_DEPS += \
 ./STM_netduino-plus-2/startup_stm32f405rgtx.d 
 
 C_DEPS += \
+./STM_netduino-plus-2/lwip_http_client.d \
+./STM_netduino-plus-2/lwip_http_server.d \
+./STM_netduino-plus-2/lwip_http_server2.d \
 ./STM_netduino-plus-2/main.d \
 ./STM_netduino-plus-2/stm32f4xx_hal_msp.d \
 ./STM_netduino-plus-2/stm32f4xx_it.d \
@@ -36,7 +45,7 @@ C_DEPS += \
 STM_netduino-plus-2/%.o: ../STM_netduino-plus-2/%.c STM_netduino-plus-2/subdir.mk
 	@echo 'Building file: $<'
 	@echo 'Invoking: GNU ARM Cross C Compiler'
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -Wall -Wextra -g3 -DSTM32F405xx -DCMB_USER_CFG -D_FORTIFY_SOURCE=2 -I../LocalDemoFiles -I../cm_backtrace -I../FreeRTOS/Source/portable/GCC/ARM_CM3 -I../FreeRTOS/CommonDemoFiles/include -I../FreeRTOS/Source/include -I../rrc-backtrace/include -I../libc_alt/musl/include -I../common/include -I../STM_netduino-plus-2/STM32F4xx_HAL_Driver/Inc -I../STM_netduino-plus-2/include -I../STM_netduino-plus-2/CMSIS/Include -I../STM_netduino-plus-2/CMSIS/Core/Include -std=gnu11 -Werror=stringop-overflow -funwind-tables -fstack-protector-strong -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -c -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -Wall -Wextra -g3 -DSTM32F405xx -DCMB_USER_CFG -D_FORTIFY_SOURCE=2 -I../LocalDemoFiles -I../cm_backtrace -I../FreeRTOS/Source/portable/GCC/ARM_CM3 -I../FreeRTOS/CommonDemoFiles/include -I../FreeRTOS/Source/include -I../rrc-backtrace/include -I../libc_alt/musl/include -I../common/include -I../STM_netduino-plus-2/STM32F4xx_HAL_Driver/Inc -I../STM_netduino-plus-2/include -I../STM_netduino-plus-2/CMSIS/Include -I../STM_netduino-plus-2/CMSIS/Core/Include -I../LwIP/src/include -I../LwIP/system -I../CMSIS_RTOS -std=gnu11 -Werror=stringop-overflow -Wno-unused-parameter -funwind-tables -fstack-protector-strong -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -c -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

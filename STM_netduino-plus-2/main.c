@@ -25,8 +25,18 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include "cmsis_os.h"
+
+#include "lwip/tcpip.h"
+#include "lwip/apps/httpd.h"
+
 #include "cm_backtrace.h"
 #include "security_tests.h"
+#include "lwip_http_client.h"
+#include "lwip_http_server.h"
+#include "lwip_http_server2.h"
+
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -61,6 +71,27 @@ static void MX_USART1_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+static void Netif_Config(void)
+{
+#if 0
+  /* add the network interface */
+  netif_add(&gnetif, &ipaddr, &netmask, &gw, NULL, &ethernetif_init, &tcpip_input);
+
+  /*  Registers the default network interface. */
+  netif_set_default(&gnetif);
+#endif
+}
+
+static void tcp_client_thread(void *arg)
+{
+  vTaskDelay(2000);
+  while (1) {
+    tcp_httpclient_connect();
+//    printf("Running %u\n", (unsigned int) xTaskGetTickCount());
+    vTaskDelay(12000);
+  }
+}
 
 /* USER CODE END 0 */
 
@@ -101,9 +132,17 @@ int main(void)
   printf("Init complete\n");
   printf("CPU Speed: %"PRIu32" MHz\n", SystemCoreClock / 1000 / 1000);
 
-  test_fortify_source_level3();
+  /* Create tcp_ip stack thread */
+  tcpip_init(NULL, NULL);
 
-  printf("Looping...\n");
+  /* Initialize the LwIP stack */
+  Netif_Config();
+
+  http_server_netconn_init();
+
+  http_server2_init();
+
+  sys_thread_new("tcpclient", tcp_client_thread, NULL, 1000, osPriorityNormal);
 
   /* USER CODE END 2 */
 
@@ -111,6 +150,9 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    vTaskStartScheduler();
+
+    printf("Uh-oh!\n");
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

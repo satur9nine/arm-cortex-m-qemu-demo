@@ -18,8 +18,27 @@ RM := rm -rf
 -include cm_backtrace/subdir.mk
 -include STM_netduino-plus-2/STM32F4xx_HAL_Driver/Src/subdir.mk
 -include STM_netduino-plus-2/subdir.mk
+-include LwIP/system/OS/subdir.mk
+-include LwIP/src/netif/ppp/polarssl/subdir.mk
+-include LwIP/src/netif/ppp/subdir.mk
+-include LwIP/src/netif/subdir.mk
+-include LwIP/src/core/ipv6/subdir.mk
+-include LwIP/src/core/ipv4/subdir.mk
+-include LwIP/src/core/subdir.mk
+-include LwIP/src/apps/tftp/subdir.mk
+-include LwIP/src/apps/sntp/subdir.mk
+-include LwIP/src/apps/snmp/subdir.mk
+-include LwIP/src/apps/smtp/subdir.mk
+-include LwIP/src/apps/netbiosns/subdir.mk
+-include LwIP/src/apps/mqtt/subdir.mk
+-include LwIP/src/apps/mdns/subdir.mk
+-include LwIP/src/apps/lwiperf/subdir.mk
+-include LwIP/src/apps/http/subdir.mk
+-include LwIP/src/apps/altcp_tls/subdir.mk
+-include LwIP/src/api/subdir.mk
 -include FreeRTOS/Source/portable/GCC/ARM_CM4F/subdir.mk
 -include FreeRTOS/Source/subdir.mk
+-include CMSIS_RTOS/subdir.mk
 -include subdir.mk
 -include objects.mk
 

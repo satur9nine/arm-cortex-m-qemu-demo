@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "cmsis_impl.h": "c",
+        "accoutrements.h": "c"
+    }
+}

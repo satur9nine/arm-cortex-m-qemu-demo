@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdint.h>
 #include <sys/stat.h>
 
 #include "main.h"
@@ -52,4 +53,9 @@ int _read(int file, char *ptr, int len)
   }
 
   return len;
+}
+
+uint32_t sys_now(void)
+{
+	return HAL_GetTick();
 }
